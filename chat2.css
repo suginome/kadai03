@@ -1,0 +1,16 @@
+#text{
+ background:#ffffcc;
+    border-radius: 20px
+}
+
+.comentbox{
+ border: 3px solid #ff9723;
+ padding: 10px;
+ width:300px;
+ background:#ffffcc;
+    border-radius: 20px;
+}
+
+.wrap{
+ display: flex;
+}

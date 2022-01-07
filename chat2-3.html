@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Firebase_version9_RealtimeDB(G'sACADEMY初学者用サンプル)</title>
+<link rel="stylesheet" href="chat2.css">
+<style>
+  
+</style>
+
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+<p>幹部連絡ツール</p>
+
+<div wrap>
+  <select id="uname" onchange="myfunc()">
+    <option value="" selected>入力者選択</option>
+    <option value="社長">社長</option>
+    <option value="料理長">料理長</option>
+    <option value="仲居頭">仲居頭</option>
+    <option value="取締役">取締役</option>
+　</select>
+
+<script>
+    let select = document.querySelector('[name="myselectbox"]');
+    select.onchange = event => { 
+    console.log(select.selectedIndex);　}
+
+</script>
+
+
+    <!-- <div><p style= "font-size:10px;"> </p><input style="white-space:nowrap;" type="text" id="uname"> </div> -->
+    <!-- <div　style="font-size:50pt"> 名前：<input type="text" id="uname"> </div>  -->
+    
+
+    <!-- <div> -->
+      <!-- 
+        <p style= "font-size:17px; margin:auto;" > 名前：</p><input type="text" id="uname"> -->
+        <textarea id="text" cols="60" rows="10"></textarea>
+        <button id="send">送信</button>
+        
+    <!-- </div> -->
+    <!-- <div id="output" style="overflow: auto; height: 600px;"></div>
+<!-- </div> -->
+<table style="overflow: auto; height: 600px;">
+<div id="output"></div>
+<script>
+  const num = Date.now();
+  consol.log(num);
+</script>
+
+</table>
+</div>
+<!--/ コンテンツ表示画面 -->
+
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved } 
+ from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_2Y5cS0oR0WLoEcPKQt4T-v-NtfIYWaQ",
+    authDomain: "chat2-a24fb.firebaseapp.com",
+    projectId: "chat2-a24fb",
+    storageBucket: "chat2-a24fb.appspot.com",
+    messagingSenderId: "661450630490",
+    appId: "1:661450630490:web:e76fb1ca1879352aa77f63",
+    measurementId: "G-FMPSRHGZW5"
+  };
+
+
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  // const analytics = getAnalytics(app);
+  const db =getDatabase(app);  
+  const dbRef= ref(db, "chat2");
+
+  $("#send").on("click",function(){
+   // const uname = $("#uname").val();
+   // const text = $("#text").val();
+   // alert(uname + text);
+  const msg = {
+
+   uname: $("#uname").val(),
+   text: $("#text").val()
+   
+  };
+
+  $("#text").val("");
+
+ const newPostRef = push(dbRef);
+ set(newPostRef,msg);
+  });
+  
+
+  onChildAdded(dbRef, function(data){
+  const msg = data.val();
+  const key = data.key;
+  let h = '<tr><th>';
+         h += msg.uname;
+         h += '</th><td>';
+         h += '<div class="comentbox">'+msg.text+"</div></td><td>";
+         h += '<button class="delete">削除</button></td><td class="key" style="visibility:hidden;" width="0">'+key;
+        //  h +=`<li id='${key}'>` ;
+         h += '</td></tr>';
+         // h += '<button class="delete">削除</button></td>';
+         // h += '</tr>';
+         $("#output").append(h); //#outputの最後に追加
+         });
+ // $(document).on('click','.delete',function(){
+  // const deleteDB = $(this).closest('tr').find('.key').text();
+  // console.log(deleteDB);
+  // console.log("1");
+  // $(this)
+  // .closest("tr")
+  // .remove();
+
+  // remove(dbRef);
+
+
+$(document).on('click','.delete',function () { // .btn_deleteがクリックされたら処理を実行します
+ const deleteDB = $(this).closest('tr').find('.key').text();
+      console.log(deleteDB);
+      console.log("1");
+      $(this)          // クリックした削除ボタンを指定する（ ここがthisであることは重要です ）
+      .closest("tr")  // 指定した要素の直近のtr要素を取得する
+      .remove();      // 取得した要素を削除する
+      // // 
+      set(ref(db, "chat2/"+deleteDB),null);
+
+// ジェークえりなどで
+
+     });
+
+
+</script>
+</body>
+</html>
